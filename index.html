@@ -3,12 +3,27 @@
 <head>
 <meta charset="utf-8">
 <title>PC3D - Protein Classification 3D</title>
-<!-- the only line that changes: the current trycloudflare address -->
-<meta http-equiv="refresh" content="0; url=https://verbal-determination-reasoning-brad.trycloudflare.com">
-<script>location.replace("https://verbal-determination-reasoning-brad.trycloudflare.com" + location.search + location.hash);</script>
+<meta http-equiv="Cache-Control" content="no-cache">
 </head>
 <body style="font-family:sans-serif;text-align:center;margin-top:15vh">
-<p>Redirecting to the PC3D website…</p>
-<p><a id="go" href="https://verbal-determination-reasoning-brad.trycloudflare.com">Click here if you are not redirected</a></p>
+<p>Opening the PC3D website…</p>
+<p><a id="go" href="https://verbal-determination-reasoning-brad.trycloudflare.com">Click here if nothing happens</a></p>
+<script>
+// fallback address (same as link.txt at the time of the last update)
+var FALLBACK = "https://verbal-determination-reasoning-brad.trycloudflare.com";
+var tail = location.search + location.hash;
+function go(u) { location.replace(u + tail); }
+// link.txt read through the GitHub API (not cached like this page), so a new tunnel address is used at once
+var ctl = new AbortController(); setTimeout(function () { ctl.abort(); }, 4000);
+fetch("https://api.github.com/repos/Azure2212/pc3d/contents/link.txt?ref=main&t=" + Date.now(),
+      { headers: { Accept: "application/vnd.github.raw" }, cache: "no-store", signal: ctl.signal })
+  .then(function (r) { return r.ok ? r.text() : ""; })
+  .then(function (t) {
+    t = (t || "").trim();
+    if (/^https:\/\/[a-z0-9-]+\.trycloudflare\.com$/.test(t)) { document.getElementById("go").href = t; go(t); }
+    else go(FALLBACK);
+  })
+  .catch(function () { go(FALLBACK); });
+</script>
 </body>
 </html>
